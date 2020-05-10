@@ -1,0 +1,13 @@
+package main
+import (
+"regexp"
+"io/ioutil"
+)
+func main() {
+regexes := []*regexp.Regexp{
+regexp.MustCompile(`@`),
+regexp.MustCompile(`article`),
+regexp.MustCompile(`{`),
+regexp.MustCompile(`MP2`),
+}
+}
