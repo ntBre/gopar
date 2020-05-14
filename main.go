@@ -72,10 +72,12 @@ func MakeImports(imports ...string) (line string) {
 
 func MakeGo(names, tokens []string) (lines string) {
 	// could also read imports from input file
-	imports := MakeImports("regexp", "io/ioutil")
+	imports := MakeImports("regexp", "io/ioutil", "fmt")
 	lines += fmt.Sprintf("package main\nimport (\n%s)\n", imports)
 	lines += fmt.Sprintf("func main() {\n")
-	// TODO read input file
+	// read input file
+	lines += fmt.Sprintf("%s%s", "text, err := ioutil.ReadFile(\"test.parse\")\n",
+	"if err != nil { panic(err) }\n")
 	// build expressions
 	lines += "regexes := []*regexp.Regexp{\n"
 	for i, _ := range names {
@@ -84,6 +86,14 @@ func MakeGo(names, tokens []string) (lines string) {
 	// close regexes
 	lines += "}\n"
 	// TODO match expressions and build tokens
+	// open for loop
+	lines += fmt.Sprintf("%s", "for _, regex := range regexes {\n")
+	lines += fmt.Sprintf("%s%s", "if regex.Match(text) {\n",
+		"fmt.Println(regex)\n")
+	// close if
+	lines += fmt.Sprintf("}\n")
+	// close for loop
+	lines += fmt.Sprintf("}\n")
 	// close main
 	lines += fmt.Sprintf("}\n")
 	return

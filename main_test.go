@@ -48,12 +48,15 @@ func TestParseInput(t *testing.T) {
 }
 
 func TestMakeGo(t *testing.T) {
-	t.Errorf("got:\n%s", MakeGo(ParseInputString("@\narticle Type\n{\nMP2 Key")))
+	// t.Errorf("got:\n%s", MakeGo(ParseInputString("@\narticle Type\n{\nMP2 Key")))
 }
 
 func TestWriteGo(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping in short mode")
+	}
 	names, tokens := ParseInputString("@\narticle Type\n{\nMP2 Key")
-	// f, _ := os.Create("test.go")
-	// WriteGo(names, tokens, f)
-	WriteGo(names, tokens, os.Stdout)
+	f, _ := os.Create("test.go")
+	WriteGo(names, tokens, f)
+	// WriteGo(names, tokens, os.Stdout)
 }
