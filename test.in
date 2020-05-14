@@ -2,3 +2,18 @@
 article Type
 {
 MP2 Key
+,
+author={
+.+/}, Author
+title={
+(?s).+/}, Title
+journal={
+.+/}, Journal
+volume={
+.+/}, Volume
+Pages={
+.+/}, Pages
+Year={
+.+/}} Year
+TAGS:\s
+.+/$ Tags

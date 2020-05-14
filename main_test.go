@@ -6,13 +6,13 @@ import (
 	"testing"
 )
 
-func TestReadInput(t *testing.T) {
-	got := ReadInput("test.in")
-	want := "@\narticle Type\n{\nMP2 Key"
-	if got != want {
-		t.Errorf("got %q, wanted %q", got, want)
-	}
-}
+// func TestReadInput(t *testing.T) {
+// 	got := ReadInput("test.in")
+// 	want := "@\narticle Type\n{\nMP2 Key"
+// 	if got != want {
+// 		t.Errorf("got %q, wanted %q", got, want)
+// 	}
+// }
 
 func TestIsSpace(t *testing.T) {
 	t.Run("tab", func(t *testing.T) {
@@ -39,8 +39,9 @@ func TestIsSpace(t *testing.T) {
 }
 
 func TestParseInput(t *testing.T) {
-	got1, got2 := ParseInputString("@\narticle Type\n{\nMP2 Key")
-	want1, want2 := []string{"@", "article", "{", "MP2"}, []string{"", "Type", "", "Key"}
+	got1, got2, _ := ParseInputString("@\narticle Type\n{\nMP2 Key\n,")
+	want1, want2 := []string{"@", "article", "{", "MP2", ","},
+		[]string{"", "Type", "", "Key", ""}
 	if !reflect.DeepEqual(got1, want1) || !reflect.DeepEqual(got2, want2) {
 		t.Errorf("Something wrong, gots: %q, %q; wants: %q, %q",
 			got1, got2, want1, want2)
@@ -55,8 +56,14 @@ func TestWriteGo(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping in short mode")
 	}
-	names, tokens := ParseInputString("@\narticle Type\n{\nMP2 Key")
+	names, tokens, trims := ParseInputString("@\narticle Type\n{\nMP2 Key")
 	f, _ := os.Create("test.go")
-	WriteGo(names, tokens, f)
+	WriteGo(names, tokens, trims, f)
 	// WriteGo(names, tokens, os.Stdout)
+}
+
+func TestMain(t *testing.T) {
+	names, tokens, trims := ParseInputString(ReadInput("test.in"))
+	f, _ := os.Create("test.go")
+	WriteGo(names, tokens, trims, f)
 }
