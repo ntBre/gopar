@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"reflect"
 	"testing"
 	"fmt"
@@ -53,22 +52,6 @@ func TestParseInput(t *testing.T) {
 
 func TestMakeGo(t *testing.T) {
 	// t.Errorf("got:\n%s", MakeGo(ParseInputString("@\narticle Type\n{\nMP2 Key")))
-}
-
-func TestWriteGo(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping in short mode")
-	}
-	names, tokens, trims := ParseInputString("@\narticle Type\n{\nMP2 Key")
-	f, _ := os.Create("test.go")
-	WriteGo(names, tokens, trims, f)
-	// WriteGo(names, tokens, os.Stdout)
-}
-
-func TestMain(t *testing.T) {
-	names, tokens, trims := ParseInputString(ReadInput("test.in"))
-	f, _ := os.Create("test.go")
-	WriteGo(names, tokens, trims, f)
 }
 
 func TestParseText(t *testing.T) {

@@ -160,8 +160,15 @@ func WriteGo(names, tokens, trims []string, w io.Writer) {
 	w.Write([]byte(lines))
 }
 
-func main() {
-	names, tokens, trims := ParseInputString(ReadInput("test.in"))
-	f, _ := os.Create("test.go")
+func WriteParser(inputFile, parserFile string) {
+	names, tokens, trims := ParseInputString(ReadInput(inputFile))
+	f, _ := os.Create(parserFile)
 	WriteGo(names, tokens, trims, f)
+}
+
+func main() {
+	if len(os.Args) < 2 {
+		panic("Input file not found, aborting")
+	}
+	WriteParser(os.Args[1], "parse.go")
 }
