@@ -4,6 +4,9 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"fmt"
+	"io/ioutil"
+	"strings"
 )
 
 // func TestReadInput(t *testing.T) {
@@ -66,4 +69,18 @@ func TestMain(t *testing.T) {
 	names, tokens, trims := ParseInputString(ReadInput("test.in"))
 	f, _ := os.Create("test.go")
 	WriteGo(names, tokens, trims, f)
+}
+
+func TestParseText(t *testing.T) {
+	text, err := ioutil.ReadFile("test.parse")
+	if err != nil {
+		panic(err)
+	}
+	lines := strings.Split(string(text), "\n")
+	for i, line := range lines {
+		lines[i] = strings.TrimSpace(line)
+	}
+	text = []byte(strings.Join(lines, "\n"))
+	got := ParseText(text)
+	fmt.Printf("%#v\n", got)
 }

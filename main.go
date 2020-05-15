@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 )
 
 func ReadInput(filename string) (lines string) {
@@ -95,18 +96,10 @@ func MakeImports(imports ...string) (line string) {
 
 func MakeGo(names, tokens, trims []string) (lines string) {
 	// could also read imports from input file
-	imports := MakeImports("regexp", "io/ioutil", "fmt", "strings")
+	imports := MakeImports("regexp", "strings")
 	lines += fmt.Sprintf("package main\nimport (\n%s)\n", imports)
-	lines += fmt.Sprintf("func main() {\n")
+	lines += fmt.Sprintf("func ParseText(text []byte) interface{} {\n")
 	// read input file
-	lines += fmt.Sprintf("%s%s", "text, err := ioutil.ReadFile(\"test.parse\")\n",
-		"if err != nil { panic(err) }\n")
-	lines += fmt.Sprintln("lines := strings.Split(string(text), \"\\n\")")
-	lines += fmt.Sprintln("for i, line := range(lines) {")
-	lines += fmt.Sprintln("	lines[i] = strings.TrimSpace(line)")
-	lines += fmt.Sprintln("}")
-	lines += fmt.Sprintln("text = []byte(strings.Join(lines, \"\\n\"))")
-	// build expressions
 	lines += "type Regexp struct {\nExpr *regexp.Regexp\nTokenize bool\nTrim string\n}\n"
 	lines += "regexes := []Regexp{\n"
 	tokenString := ""
@@ -126,7 +119,7 @@ func MakeGo(names, tokens, trims []string) (lines string) {
 	lines += "type Tokens struct {\n" + tokenString
 	// close struct
 	lines += "}\n"
-	// TODO match expressions and build tokens
+	// match expressions and build tokens
 	// open for loop
 	lines += fmt.Sprintln("tokenSlice := make([]string, 0)")
 	lines += fmt.Sprintf("%s", "for _, regex := range regexes {\n")
@@ -156,7 +149,7 @@ func MakeGo(names, tokens, trims []string) (lines string) {
 	for i, _ := range goodTokens {
 		lines += fmt.Sprintf("t.%s = tokenSlice[%d]\n", goodTokens[i], i)
 	}
-	lines += fmt.Sprintf("fmt.Printf(\"%%#v\", t)\n")
+	lines += fmt.Sprintf("return t")
 	// close main
 	lines += fmt.Sprintf("}\n")
 	return
@@ -167,15 +160,8 @@ func WriteGo(names, tokens, trims []string, w io.Writer) {
 	w.Write([]byte(lines))
 }
 
-// The first element is a regular expression, optionally inside quotes
-// quotes are not allowed right now
-// the second thing is where it gets stored
-// names -> regexp for matching
-// tokens -> if regexp.Match(names) {thing.Token =
-
-// what should the parser return? right now im working on the code that will write the parser
-
-// MakeGo should not write a main function, it should just be a function that returns
-// some struct with fields of tokens and can then be called from another go file
-
-// give it a filename, it returns a struct of the tokenized contents
+func main() {
+	names, tokens, trims := ParseInputString(ReadInput("test.in"))
+	f, _ := os.Create("test.go")
+	WriteGo(names, tokens, trims, f)
+}
